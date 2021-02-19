@@ -1,41 +1,46 @@
 import data from "./data.js";
-import {searchMovieByTitle, makeBgActive} from "./helpers.js";
+import { searchMovieByTitle, makeBgActive } from "./helpers.js";
+import { fillYearFilter, fillGenreFilter } from "./filters.js";
 
 class MoviesApp {
     constructor(options) {
-        const {root, searchInput, searchForm, yearHandler, yearSubmitter} = options;
+        const { root, searchInput, searchForm, yearHandler, yearSubmitter } = options;
         this.$tableEl = document.getElementById(root);
         this.$tbodyEl = this.$tableEl.querySelector("tbody");
-
         this.$searchInput = document.getElementById(searchInput);
-        this.$searchForm   = document.getElementById(searchForm);
+        this.$searchForm = document.getElementById(searchForm);
         this.yearHandler = yearHandler;
         this.$yearSubmitter = document.getElementById(yearSubmitter);
     }
 
-    createMovieEl(movie){
-        const {image, title, genre, year,id} = movie;
+    createMovieEl(movie) {
+        const { image, title, genre, year, id } = movie;
         return `<tr data-id="${id}"><td><img src="${image}"></td><td>${title}</td><td>${genre}</td><td>${year}</td></tr>`
     }
 
-    fillTable(){
+    fillFilters() {
+        fillYearFilter(data);
+        fillGenreFilter(data);
+    }
+
+    fillTable() {
         /* const moviesHTML = data.reduce((acc, cur) => {
             return acc + this.createMovieEl(cur);
         }, "");*/
         const moviesArr = data.map((movie) => {
-           return this.createMovieEl(movie)
+            return this.createMovieEl(movie)
         }).join("");
         this.$tbodyEl.innerHTML = moviesArr;
     }
 
-    reset(){
+    reset() {
         this.$tbodyEl.querySelectorAll("tr").forEach((item) => {
             item.style.background = "transparent";
         })
     }
 
 
-    handleSearch(){
+    handleSearch() {
         this.$searchForm.addEventListener("submit", (event) => {
             event.preventDefault();
             this.reset();
@@ -47,7 +52,7 @@ class MoviesApp {
         });
     }
 
-    handleYearFilter(){
+    handleYearFilter() {
         this.$yearSubmitter.addEventListener("click", () => {
             this.reset();
             const selectedYear = document.querySelector(`input[name='${this.yearHandler}']:checked`).value
@@ -57,10 +62,11 @@ class MoviesApp {
         });
     }
 
-    init(){
+    init() {
         this.fillTable();
         this.handleSearch();
         this.handleYearFilter();
+        this.fillFilters();
     }
 }
 
