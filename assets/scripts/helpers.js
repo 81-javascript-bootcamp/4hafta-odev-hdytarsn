@@ -19,7 +19,9 @@ export const searchMovieByTitle = (movie, searchValue) => {
 export const makeBgActive = (movies, filter) => {
     resetBg();
     movies.forEach((movie) => {
-        document.querySelector(`tr[data-id='${movie.id}']`).style.background = getColorCodeByGender(filter == "genre" ? movie.genre.toLowerCase() : " ");
+        const movieEl = document.querySelector(`tr[data-id='${movie.id}']`);
+        movieEl.style.background = getColorCodeByGender(filter == "genre" ? movie.genre.toLowerCase() : "");
+        movieEl.classList.add('selected-movie');
     });
 
 }
@@ -27,6 +29,8 @@ export const makeBgActive = (movies, filter) => {
 function resetBg() {
     document.querySelectorAll("tr").forEach((item) => {
         item.style.background = "transparent";
+        item.classList.remove('selected-movie');
+
     })
 }
 
