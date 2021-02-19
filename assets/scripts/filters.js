@@ -1,6 +1,5 @@
 function sortItemsByKeyAndType(items, key, type = "number") {
     if (type == "string") {
-        console.log('st');
         return items.map(items => items[key]).sort();
     } else {
         return items.sort((a, b) => a[key] - b[key]).map(items => items[key]);
@@ -19,8 +18,8 @@ export const fillYearFilter = (movies) => {
     Object.keys(sortedYearsWithCount).forEach(year => {
         $yearFiltersEl.innerHTML +=
             `<div class="form-check"> 
-                <input class="form-check-input" type="radio" name="year" id="${'year'+year}" value="${year}">
-                <label class="form-check-label" for="${'year'+year}"> ${year} (${sortedYearsWithCount[year]})</label>
+                <input class="form-check-input" type="radio" name="yearFilter" id="${'year_'+year}" value="${year}">
+                <label class="form-check-label" for="${'year_'+year}"> ${year} (${sortedYearsWithCount[year]})</label>
             </div>`;
     });
 }
@@ -31,7 +30,7 @@ export const fillGenreFilter = (movies) => {
     Object.keys(genresWithCount).forEach(genre => {
         $genreFiltersEl.innerHTML +=
             `<div class="form-check"> 
-                <input class="form-check-input" type="radio" name="genre" id="${'genre'+genre}" value="${genre}">
+                <input class="form-check-input" type="checkbox" name="genreFilter" id="${'genre'+genre}" value="${genre}">
                 <label class="form-check-label" for="${'genre'+genre}"> ${genre} (${genresWithCount[genre]})</label>
             </div>`;
     });

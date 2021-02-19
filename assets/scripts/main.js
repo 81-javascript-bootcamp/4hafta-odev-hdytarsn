@@ -1,16 +1,18 @@
 import data from "./data.js";
-import { searchMovieByTitle, makeBgActive } from "./helpers.js";
+import { searchMovieByTitle, makeBgActive, clearFilter } from "./helpers.js";
 import { fillYearFilter, fillGenreFilter } from "./filters.js";
 
 class MoviesApp {
     constructor(options) {
-        const { root, searchInput, searchForm, yearHandler, yearSubmitter } = options;
+        const { root, searchInput, searchForm, yearHandler, yearSubmitter, genreHandler, genreSubmitter } = options;
         this.$tableEl = document.getElementById(root);
         this.$tbodyEl = this.$tableEl.querySelector("tbody");
         this.$searchInput = document.getElementById(searchInput);
         this.$searchForm = document.getElementById(searchForm);
         this.yearHandler = yearHandler;
         this.$yearSubmitter = document.getElementById(yearSubmitter);
+        this.genreHandler = genreHandler;
+        this.$genreSubmitter = document.getElementById(genreSubmitter);
     }
 
     createMovieEl(movie) {
@@ -24,49 +26,73 @@ class MoviesApp {
     }
 
     fillTable() {
-        /* const moviesHTML = data.reduce((acc, cur) => {
+        const moviesHTML = data.reduce((acc, cur) => {
             return acc + this.createMovieEl(cur);
-        }, "");*/
-        const moviesArr = data.map((movie) => {
-            return this.createMovieEl(movie)
-        }).join("");
-        this.$tbodyEl.innerHTML = moviesArr;
+        }, "");
+        this.$tbodyEl.innerHTML = moviesHTML;
     }
-
-    reset() {
-        this.$tbodyEl.querySelectorAll("tr").forEach((item) => {
-            item.style.background = "transparent";
-        })
+    getElementByName(name, isMultiple = false) {
+        if (isMultiple) {
+            return document.querySelectorAll(`input[name='${name}']:checked`);
+        } else {
+            return document.querySelector(`input[name='${name}']:checked`);
+        }
     }
-
 
     handleSearch() {
         this.$searchForm.addEventListener("submit", (event) => {
             event.preventDefault();
-            this.reset();
             const searchValue = this.$searchInput.value;
             const matchedMovies = data.filter((movie) => {
                 return searchMovieByTitle(movie, searchValue);
-            }).forEach(makeBgActive)
-
+            })
+            makeBgActive(matchedMovies);
+            clearFilter(this.$searchForm, 'form');
+            clearFilter(this.genreHandler, 'checkbox');
+            clearFilter(this.yearHandler, 'radio');
         });
     }
 
     handleYearFilter() {
         this.$yearSubmitter.addEventListener("click", () => {
-            this.reset();
-            const selectedYear = document.querySelector(`input[name='${this.yearHandler}']:checked`).value
+            const selectedYear = this.getElementByName(this.yearHandler);
+            if (!selectedYear) {
+                alert('Please choose at least 1 year!')
+                return 0;
+            }
             const matchedMovies = data.filter((movie) => {
-                return movie.year === selectedYear;
-            }).forEach(makeBgActive)
+                return movie.year === selectedYear.value;
+            });
+            makeBgActive(matchedMovies);
+            clearFilter(this.$searchForm, 'form');
+            clearFilter(this.genreHandler, 'checkbox');
+        });
+    }
+
+    handleGenreFilter() {
+        this.$genreSubmitter.addEventListener("click", () => {
+            let genreArr = [];
+            this.getElementByName(this.genreHandler, 'multiple').forEach(el => {
+                genreArr.push(el.value);
+            })
+            if (!genreArr[0]) {
+                alert('Please choose at least 1 genre!')
+            }
+            const matchedMovies = data.filter((movie) => {
+                return genreArr.includes(movie.genre)
+            });
+            makeBgActive(matchedMovies, "genre");
+            clearFilter(this.$searchForm, 'form');
+            clearFilter(this.yearHandler, 'radio');
         });
     }
 
     init() {
         this.fillTable();
+        this.fillFilters();
         this.handleSearch();
         this.handleYearFilter();
-        this.fillFilters();
+        this.handleGenreFilter();
     }
 }
 
@@ -74,8 +100,10 @@ let myMoviesApp = new MoviesApp({
     root: "movies-table",
     searchInput: "searchInput",
     searchForm: "searchForm",
-    yearHandler: "year",
-    yearSubmitter: "yearSubmitter"
+    yearHandler: "yearFilter",
+    yearSubmitter: "yearSubmitter",
+    genreHandler: "genreFilter",
+    genreSubmitter: "genreSubmitter"
 });
 
 myMoviesApp.init();

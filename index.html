@@ -18,7 +18,7 @@
                     <form id="searchForm">
                         <div class="mb-3">
                             <label for="searchInput" class="form-label">Search Movie</label>
-                            <input type="text" class="form-control" id="searchInput">
+                            <input type="text" required class="form-control" id="searchInput">
                         </div>
                         <button type="submit" class="btn btn-primary">Search</button>
                     </form>
@@ -32,7 +32,7 @@
                 <div class="box">
                     <h5>Filter by genre</h5>
                     <div id="filterGenres"></div>
-                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <button type="submit" class="btn btn-primary" id="genreSubmitter">Filter</button>
                 </div>
             </div>
             <div class="col-md-9">
@@ -46,12 +46,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Image</td>
-                            <td>Movie Name</td>
-                            <td>Action</td>
-                            <td>1990</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
