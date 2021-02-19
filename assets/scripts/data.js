@@ -125,6 +125,4 @@ let moviesData = [{
         "id": 19
     }
 ]
-
-
 export default moviesData;
